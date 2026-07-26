@@ -1,0 +1,18 @@
+{
+    "env": {
+        "ANTHROPIC_BASE_URL": "https://ai-hub.aicampus.my",
+        "ANTHROPIC_API_KEY": "sk-hub-HESY78KPEkxVRyu34quD0moyy3LxLz0453QqlM0U9ZA",
+        "CLAUDE_CODE_USE_OAUTH": "false",
+        "ANTHROPIC_MODEL": "ag/gemini-3.5-flash-high",
+        "ANTHROPIC_DEFAULT_SONNET_MODEL": "ag/gemini-3.5-flash-high",
+        "ANTHROPIC_DEFAULT_OPUS_MODEL": "ag/gemini-3.1-pro-high",
+        "ANTHROPIC_DEFAULT_HAIKU_MODEL": "ag/gemini-3.5-flash-high"
+    },
+    "enabledPlugins": {
+        "atlassian@claude-plugins-official": false
+    },
+    "disabledMcpjsonServers": [
+        "figma"
+    ],
+    "skipDangerousModePermissionPrompt": true
+}
