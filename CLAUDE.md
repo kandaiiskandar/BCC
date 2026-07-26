@@ -20,10 +20,10 @@ supabase start        # Start local Supabase (DB + Auth + API)
 supabase stop         # Stop local Supabase
 supabase db reset     # Reset DB and re-run migrations
 
-# Frontend (React, once scaffolded)
-npm run dev           # Start React dev server
-npm run build         # Production build
-npm run lint          # Lint check
+# Frontend (React + Vite, once scaffolded)
+pnpm dev              # Start React dev server
+pnpm build            # Production build
+pnpm lint             # Lint check
 ```
 
 All configuration (Supabase URL, anon key, SMTP credentials) must live in environment variables — never hardcoded.
