@@ -4,7 +4,24 @@ Semua yang berkaitan dengan pembangunan teknikal sistem Dashboard Jualan Kop-Pus
 
 **Engineer:** Iskandar  
 **PM:** —  
-**Fasa Semasa:** Fasa 1 — MVP
+**Fasa Semasa:** Fasa 1 — MVP (Dalam Pembangunan)
+
+---
+
+## Panduan Pembangunan Pantas (Quick Start)
+
+```bash
+# 1. Jalankan pengkalan data tempatan (dalam folder 04_development/)
+supabase start
+
+# 2. Jalankan React Dev Server
+pnpm dev
+
+# 3. Bina fail pengeluaran (Production Build)
+pnpm run build
+```
+
+*Akaun Ujian:* Rujuk `docs/test-accounts.md` untuk senarai e-mel dan kata laluan ujian.
 
 ---
 
@@ -14,22 +31,27 @@ Semua yang berkaitan dengan pembangunan teknikal sistem Dashboard Jualan Kop-Pus
 04_development/
 │
 ├── specs/                        # Spesifikasi teknikal untuk engineer
-│   ├── technical-spec.md         # Spesifikasi teknikal penuh
-│   ├── user-stories.md           # User stories mengikut peranan
-│   ├── data-model.md             # Struktur database & model data
-│   └── api-spec.md               # Spesifikasi API endpoint
+│   ├── technical-spec.md         # Spesifikasi teknikal penuh (✅ Selesai)
+│   ├── data-model.md             # Struktur database, RLS & triggers (✅ Selesai)
+│   └── api-spec.md               # Spesifikasi API & RPC endpoints (✅ Selesai)
 │
 ├── docs/                         # Dokumentasi teknikal semasa development
-│   ├── architecture.md           # Keputusan seni bina sistem
-│   ├── tech-stack.md             # Stack teknologi & sebab pemilihan
-│   └── dev-notes.md              # Nota engineer semasa development
+│   ├── architecture.md           # Keputusan seni bina sistem (✅ Selesai)
+│   ├── tech-stack.md             # Stack teknologi & sebab pemilihan (✅ Selesai)
+│   ├── test-accounts.md          # Senarai akaun ujian log masuk (✅ Selesai)
+│   └── dev-notes.md              # Nota engineer & status pembangunan (✅ Selesai)
 │
-├── src/                          # Source code
-│   ├── components/               # Komponen UI yang boleh guna semula
-│   ├── pages/                    # Halaman utama sistem
-│   ├── data/                     # Data sample / mock data
-│   ├── utils/                    # Helper functions
-│   └── assets/                   # Imej, ikon, logo
+├── supabase/                     # Konfigurasi Supabase backend
+│   ├── migrations/               # Fail migrasi skema SQL
+│   └── seed.sql                  # Data benih ujian (Tenants, Projects, Auth Users)
+│
+├── src/                          # Source code React (Vite + Tailwind CSS)
+│   ├── components/               # Komponen UI & Layout (MainLayout, ProtectedRoute)
+│   ├── context/                  # AuthContext (Sesi & Peranan)
+│   ├── hooks/                    # Custom hooks (useProjects, useSales)
+│   ├── pages/                    # Halaman sistem (Login, SalesEntry)
+│   ├── services/                 # supabaseClient integration
+│   └── utils/                    # Formatters (formatRM, formatDateBM)
 │
 └── README.md                     # Fail ini
 ```
@@ -38,21 +60,18 @@ Semua yang berkaitan dengan pembangunan teknikal sistem Dashboard Jualan Kop-Pus
 
 ## Status Fail
 
-| Fail | Status |
+| Fail / Modul | Status |
 |---|---|
-| `specs/technical-spec.md` | 🔜 Dalam proses |
-| `specs/user-stories.md` | ⬜ Belum dibuat |
-| `specs/data-model.md` | ⬜ Belum dibuat |
-| `specs/api-spec.md` | ⬜ Belum dibuat |
-| `docs/architecture.md` | ⬜ Belum dibuat |
-| `docs/tech-stack.md` | ⬜ Belum dibuat |
-| `src/` | ⬜ Belum dibuat |
-
----
-
-## Peraturan Penting
-
-- **PM** menulis semua fail dalam `specs/` — ini adalah keperluan yang engineer kena ikut
-- **Engineer** menulis semua fail dalam `docs/` dan `src/`
-- Sebarang perubahan keperluan mesti diluluskan PM dahulu sebelum engineer ubah kod
-- Jangan campur fail development dengan fail projek lain (discovery, admin, dll.)
+| `specs/technical-spec.md` | ✅ Selesai |
+| `specs/data-model.md` | ✅ Selesai |
+| `specs/api-spec.md` | ✅ Selesai |
+| `docs/architecture.md` | ✅ Selesai |
+| `docs/tech-stack.md` | ✅ Selesai |
+| `docs/test-accounts.md` | ✅ Selesai |
+| `docs/dev-notes.md` | ✅ Selesai |
+| `supabase/` (Migrations & Seed) | ✅ Selesai & Berfungsi |
+| `src/pages/auth/Login.jsx` | ✅ Selesai & Berfungsi |
+| `src/pages/pm/SalesEntry.jsx` | ✅ Selesai & Berfungsi |
+| `src/pages/pm/ExpenseEntry.jsx` | 🔜 Tugasan Seterusnya (Option C) |
+| `src/pages/ceo/Dashboard.jsx` | 🔜 Tugasan Seterusnya (Option D) |
+| `src/pages/admin/UserManagement.jsx` | 🔜 Tugasan Seterusnya (Option E) |
