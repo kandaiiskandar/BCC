@@ -4,6 +4,7 @@ import { AuthProvider } from './context/AuthContext'
 import ProtectedRoute from './components/layout/ProtectedRoute'
 import MainLayout from './components/layout/MainLayout'
 import Login from './pages/auth/Login'
+import SalesEntry from './pages/pm/SalesEntry'
 
 // Placeholder Views wrapped in MainLayout
 const Dashboard = () => (
@@ -11,15 +12,6 @@ const Dashboard = () => (
     <div className="p-8">
       <h1 className="text-2xl font-bold text-slate-900 mb-2">Papan Pemuka Eksekutif (CEO)</h1>
       <p className="text-slate-600">Selamat datang ke Business Command Centre Kop-Pusamaju.</p>
-    </div>
-  </MainLayout>
-)
-
-const SalesEntry = () => (
-  <MainLayout>
-    <div className="p-8">
-      <h1 className="text-2xl font-bold text-slate-900 mb-2">Rekod Jualan Bulanan (PM)</h1>
-      <p className="text-slate-600">Sila masukkan data jualan bagi projek tugasan anda di sini.</p>
     </div>
   </MainLayout>
 )
