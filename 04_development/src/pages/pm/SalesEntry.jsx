@@ -7,7 +7,6 @@ import { PlusCircle, FileText, CheckCircle2, AlertCircle, Trash2 } from 'lucide-
 
 export default function SalesEntry() {
   const { projects, loading: loadingProjects } = useProjects()
-  const { salesEntries, loading: loadingSales, addSalesEntry, deleteSalesEntry } = useSales()
 
   const [formData, setFormData] = useState({
     project_id: '',
@@ -20,6 +19,8 @@ export default function SalesEntry() {
     invoice_ref: '',
     notes: '',
   })
+
+  const { salesEntries, loading: loadingSales, addSalesEntry, deleteSalesEntry } = useSales(formData.project_id || null)
 
   const [submitting, setSubmitting] = useState(false)
   const [successMsg, setSuccessMsg] = useState('')

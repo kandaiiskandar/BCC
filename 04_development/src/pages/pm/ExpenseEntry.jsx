@@ -28,7 +28,6 @@ const MAX_FILE_SIZE = 5 * 1024 * 1024 // 5MB
 
 export default function ExpenseEntry() {
   const { projects, loading: loadingProjects } = useProjects()
-  const { expenses, loading: loadingExpenses, addExpenseEntry } = useExpenses()
 
   const [formData, setFormData] = useState({
     project_id: '',
@@ -37,6 +36,8 @@ export default function ExpenseEntry() {
     amount: '',
     description: '',
   })
+
+  const { expenses, loading: loadingExpenses, addExpenseEntry } = useExpenses(formData.project_id || null)
   const [receiptFile, setReceiptFile] = useState(null)
   const [isDragging, setIsDragging] = useState(false)
   const [submitting, setSubmitting] = useState(false)
