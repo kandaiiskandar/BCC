@@ -4,7 +4,7 @@ Semua yang berkaitan dengan pembangunan teknikal sistem Dashboard Jualan Kop-Pus
 
 **Engineer:** Iskandar  
 **PM:** —  
-**Fasa Semasa:** Fasa 1 — MVP (Dalam Pembangunan)
+**Fasa Semasa:** Fasa 1 — MVP ✅ Selesai (10/10 skrin)
 
 ---
 
@@ -48,8 +48,8 @@ pnpm run build
 ├── src/                          # Source code React (Vite + Tailwind CSS)
 │   ├── components/               # Komponen UI & Layout (MainLayout, ProtectedRoute)
 │   ├── context/                  # AuthContext (Sesi & Peranan)
-│   ├── hooks/                    # Custom hooks (useProjects, useSales)
-│   ├── pages/                    # Halaman sistem (Login, SalesEntry)
+│   ├── hooks/                    # Custom hooks (useProjects, useSales, useExpenses, useDashboard, useUsers, useReports, useTargets)
+│   ├── pages/                    # Halaman sistem (Login, SalesEntry, ExpenseEntry, ExpenseApprovals, Dashboard, Reports, TargetsConfig, UserManagement, Settings)
 │   ├── services/                 # supabaseClient integration
 │   └── utils/                    # Formatters (formatRM, formatDateBM)
 │
@@ -72,6 +72,15 @@ pnpm run build
 | `supabase/` (Migrations & Seed) | ✅ Selesai & Berfungsi |
 | `src/pages/auth/Login.jsx` | ✅ Selesai & Berfungsi |
 | `src/pages/pm/SalesEntry.jsx` | ✅ Selesai & Berfungsi |
-| `src/pages/pm/ExpenseEntry.jsx` | 🔜 Tugasan Seterusnya (Option C) |
-| `src/pages/ceo/Dashboard.jsx` | 🔜 Tugasan Seterusnya (Option D) |
-| `src/pages/admin/UserManagement.jsx` | 🔜 Tugasan Seterusnya (Option E) |
+| `src/hooks/useExpenses.js` | ✅ Selesai |
+| `src/pages/pm/ExpenseEntry.jsx` | ✅ Selesai |
+| `src/pages/ceo/ExpenseApprovals.jsx` | ✅ Selesai |
+| `src/hooks/useDashboard.js` | ✅ Selesai |
+| `src/pages/ceo/Dashboard.jsx` | ✅ Selesai |
+| `src/hooks/useUsers.js` | ✅ Selesai |
+| `src/pages/admin/UserManagement.jsx` | ✅ Selesai |
+| `src/pages/admin/Settings.jsx` | ✅ Selesai |
+| `src/hooks/useReports.js` | ✅ Selesai |
+| `src/pages/ceo/Reports.jsx` | ✅ Selesai (Excel export via SheetJS) |
+| `src/hooks/useTargets.js` | ✅ Selesai |
+| `src/pages/ceo/TargetsConfig.jsx` | ✅ Selesai |

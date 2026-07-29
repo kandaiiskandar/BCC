@@ -50,6 +50,41 @@ export function getRevenueTypeLabel(type) {
 }
 
 /**
+ * Maps database expense_category ENUM values to Bahasa Malaysia labels.
+ */
+export function getExpenseCategoryLabel(category) {
+  switch (category) {
+    case 'salaries_wages':          return 'Gaji dan Upah Kakitangan'
+    case 'marketing_advertising':   return 'Kos Pemasaran dan Pengiklanan'
+    case 'daily_operations':        return 'Kos Operasi Harian'
+    case 'supplier_raw_materials':  return 'Kos Pembekal / Bahan Mentah'
+    case 'rent':                    return 'Sewa Premis'
+    case 'utilities':               return 'Utiliti (Elektrik, Air, Internet)'
+    case 'sales_commission':        return 'Komisen Jualan'
+    case 'travel_transport':        return 'Perjalanan dan Pengangkutan'
+    case 'equipment_tech':          return 'Peralatan dan Teknologi'
+    case 'others':                  return 'Lain-lain'
+    default:                        return category
+  }
+}
+
+/**
+ * Maps expense_status ENUM to badge config { label, classes }.
+ */
+export function getExpenseStatusBadge(status) {
+  switch (status) {
+    case 'pending':
+      return { label: '⏳ Menunggu Kelulusan', classes: 'bg-yellow-100 text-yellow-800 border border-yellow-200' }
+    case 'approved':
+      return { label: '🟢 Diluluskan', classes: 'bg-emerald-100 text-emerald-800 border border-emerald-200' }
+    case 'rejected':
+      return { label: '🔴 Ditolak', classes: 'bg-red-100 text-red-800 border border-red-200' }
+    default:
+      return { label: status, classes: 'bg-slate-100 text-slate-600' }
+  }
+}
+
+/**
  * Maps database payment_method ENUM values to Bahasa Malaysia labels.
  */
 export function getPaymentMethodLabel(method) {

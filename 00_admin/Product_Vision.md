@@ -82,6 +82,50 @@ Setiap keputusan reka bentuk dan pembangunan mesti mengambil kira prinsip-prinsi
 
 ---
 
+## Model Harga SaaS (Panduan Jangka Panjang)
+
+> Bahagian ini adalah panduan harga apabila sistem BCC dijual kepada koperasi lain sebagai produk SaaS komersial (bermula Fasa 4).
+
+### Bayaran Persediaan (One-Time Setup Fee)
+
+| Pakej | Termasuk | Harga Cadangan |
+|---|---|---|
+| Standard | Onboarding, latihan 1 hari, migrate data awal | RM 3,000 – 5,000 |
+| Premium | + Kustomisasi logo/warna, latihan 2 hari, setup laporan | RM 7,000 – 10,000 |
+
+### Yuran Langganan Bulanan (Recurring SaaS Fee)
+
+| Pelan | Saiz Koperasi | Projek | Pengguna | Harga/Bulan |
+|---|---|---|---|---|
+| Starter | Kecil | Sehingga 5 | Sehingga 10 | RM 250 |
+| Business | Sederhana | Sehingga 15 | Sehingga 30 | RM 500 |
+| Enterprise | Besar | Tanpa had | Tanpa had | RM 900 |
+
+- Diskaun 15% untuk komitmen tahunan
+- Kop-Pusamaju (pilot) diberi akses percuma atau kadar token (RM 500/bulan) sebagai tanda penghargaan
+
+### Justifikasi Harga
+
+Berbanding alternatif lain yang ada di pasaran:
+
+| Pilihan | Kos | Kelemahan |
+|---|---|---|
+| Bina sistem sendiri (custom dev) | RM 80,000 – 200,000 sekali bayar | Mahal, tiada sokongan berterusan |
+| ERP generik (SQL Accounting, AutoCount) | RM 5,000 – 15,000/tahun | Tidak direka untuk koperasi, tiada dashboard multi-projek |
+| **BCC (Business Command Centre)** | **RM 3,000 – 10,800/tahun** | Dibina khas untuk koperasi Malaysia ✅ |
+
+### Anggaran Margin SaaS
+
+| Jumlah Pelanggan | Kos Infrastruktur/bulan | Hasil (avg RM 500/pelanggan) | Margin Kasar |
+|---|---|---|---|
+| 5 koperasi | ~RM 200 | RM 2,500 | ~92% |
+| 20 koperasi | ~RM 600 | RM 10,000 | ~94% |
+| 50 koperasi | ~RM 1,200 | RM 25,000 | ~95% |
+
+> **Sasaran Fasa 4:** 10 pelanggan dalam tahun pertama selepas launch = RM 5,000 – 9,000/bulan hasil berulang.
+
+---
+
 ## Nota untuk Engineer
 
 > Walaupun kita bina untuk satu koperasi dahulu, **jangan buat keputusan yang akan menyukarkan kita untuk scale kepada multi-tenant kemudian.** Sebarang shortcut hari ini akan jadi hutang teknikal (technical debt) yang mahal bila tiba masanya nak jual kepada koperasi lain.

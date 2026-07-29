@@ -2,37 +2,15 @@ import React from 'react'
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
 import { AuthProvider } from './context/AuthContext'
 import ProtectedRoute from './components/layout/ProtectedRoute'
-import MainLayout from './components/layout/MainLayout'
 import Login from './pages/auth/Login'
 import SalesEntry from './pages/pm/SalesEntry'
-
-// Placeholder Views wrapped in MainLayout
-const Dashboard = () => (
-  <MainLayout>
-    <div className="p-8">
-      <h1 className="text-2xl font-bold text-slate-900 mb-2">Papan Pemuka Eksekutif (CEO)</h1>
-      <p className="text-slate-600">Selamat datang ke Business Command Centre Kop-Pusamaju.</p>
-    </div>
-  </MainLayout>
-)
-
-const ExpenseEntry = () => (
-  <MainLayout>
-    <div className="p-8">
-      <h1 className="text-2xl font-bold text-slate-900 mb-2">Rekod & Kelulusan Perbelanjaan</h1>
-      <p className="text-slate-600">Urus perbelanjaan projek dan semakan kelulusan CEO.</p>
-    </div>
-  </MainLayout>
-)
-
-const UserManagement = () => (
-  <MainLayout>
-    <div className="p-8">
-      <h1 className="text-2xl font-bold text-slate-900 mb-2">Pengurusan Pengguna (Admin)</h1>
-      <p className="text-slate-600">Urus profil pengguna, peranan, dan tugasan projek.</p>
-    </div>
-  </MainLayout>
-)
+import ExpenseEntry from './pages/pm/ExpenseEntry'
+import ExpenseApprovals from './pages/ceo/ExpenseApprovals'
+import Dashboard from './pages/ceo/Dashboard'
+import Reports from './pages/ceo/Reports'
+import TargetsConfig from './pages/ceo/TargetsConfig'
+import UserManagement from './pages/admin/UserManagement'
+import Settings from './pages/admin/Settings'
 
 export default function App() {
   return (
@@ -47,6 +25,15 @@ export default function App() {
             element={
               <ProtectedRoute allowedRoles={['ceo', 'director', 'super_admin']}>
                 <Dashboard />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/reports"
+            element={
+              <ProtectedRoute allowedRoles={['ceo', 'director', 'super_admin']}>
+                <Reports />
               </ProtectedRoute>
             }
           />
@@ -70,12 +57,39 @@ export default function App() {
             }
           />
 
+          <Route
+            path="/targets-config"
+            element={
+              <ProtectedRoute allowedRoles={['ceo', 'super_admin']}>
+                <TargetsConfig />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* CEO Expense Approval Route */}
+          <Route
+            path="/expense-approvals"
+            element={
+              <ProtectedRoute allowedRoles={['ceo', 'super_admin']}>
+                <ExpenseApprovals />
+              </ProtectedRoute>
+            }
+          />
+
           {/* Admin Routes */}
           <Route
             path="/users"
             element={
               <ProtectedRoute allowedRoles={['admin', 'super_admin']}>
                 <UserManagement />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/settings"
+            element={
+              <ProtectedRoute allowedRoles={['admin', 'super_admin']}>
+                <Settings />
               </ProtectedRoute>
             }
           />

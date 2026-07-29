@@ -23,6 +23,8 @@ React SPA (React 18, Vite 5, Tailwind CSS 3) is scaffolded:
 ### 1.3 Implemented Screens (`src/pages/`)
 - **`pages/auth/Login.jsx` (Login Screen)**: Features validation inputs in BM, a show/hide password toggle, and Quick Fill buttons for fast testing (CEO, PM, Admin, Director).
 - **`pages/pm/SalesEntry.jsx` (Sales Entry Screen)**: PM entry form linking to `useProjects.js` and `useSales.js` hooks. Allows selecting assigned projects (filtered by RLS), inserting monthly sales by revenue types (Biasa, Berulang, Deposit), and deleting submitted records.
+- **`pages/pm/ExpenseEntry.jsx` (Expense Entry Screen)**: PM expense submission form with 10 categories, drag-and-drop receipt upload to Supabase Storage (`expense-receipts` bucket, signed URLs), and a submission log with live status badges (⏳/🟢/🔴). Rejection reasons shown inline.
+- **`pages/ceo/ExpenseApprovals.jsx` (CEO Expense Approval Screen)**: Full approval queue for CEO. Click "Semak" opens a modal with expense details, receipt preview (image inline, PDF via signed link), and approve/reject actions. Rejection requires a mandatory written reason. Status is immutable after a decision.
 
 ---
 
@@ -56,21 +58,48 @@ pnpm dev
 
 ---
 
-## 4. Next Implementation Tasks
+## 4. Completed Modules (Summary)
 
-The next developer or agent should proceed with:
+All Fasa 1 screens are implemented. See sections below for details.
 
-### 4.1 Option C: Expense Entry & Approval Workflow
-- Create **`pages/pm/ExpenseEntry.jsx`**: Form to submit expenses (categorized into 10 groups) and upload receipt attachments. Receipts are uploaded to a private bucket (`expense-receipts`) and retrieved using signed URLs.
-- Create **`pages/ceo/ExpenseApprovals.jsx`**: Queue for the CEO to view pending expenses, download receipt files, and click `Lulus` (Approve) or `Tolak` (Reject - with a mandatory text reason).
-- Create hooks: **`hooks/useExpenses.js`**.
+---
 
-### 4.2 Option D: CEO Executive Dashboard
-- Create **`pages/ceo/Dashboard.jsx`**: The command centre landing page.
-- Implement 4 KPI cards (Total Sales, Total Expenses, Net Profit/Loss, Target Achievement Counts).
-- Include Recharts diagrams: Monthly sales/expenses bar chart, project revenue share donut chart.
-- Implement targets progress summary table showing all 10 projects and 🟢/🟡/🔴 performance flags.
+### ✅ Option C: Expense Entry & Approval Workflow — SELESAI
+- `pages/pm/ExpenseEntry.jsx` ✅
+- `pages/ceo/ExpenseApprovals.jsx` ✅
+- `hooks/useExpenses.js` ✅
+- `utils/formatters.js` — tambah `getExpenseCategoryLabel` + `getExpenseStatusBadge` ✅
+- `App.jsx` — import real components, tambah `/expense-approvals` route ✅
 
-### 4.3 Option E: Admin Screens & Settings
-- Create **`pages/admin/UserManagement.jsx`**: Manage profiles and map PMs to projects.
-- Create **`pages/admin/Settings.jsx`**: Edit threshold values (warning threshold %, submission deadlines, auto-report emails).
+### ✅ Option D: CEO Executive Dashboard — SELESAI
+- `hooks/useDashboard.js` ✅ — parallel Supabase queries; calculates KPIs, per-project stats, 12-month trend, donut breakdown; supports 4 date filters (current month, last month, quarter, YTD)
+- `pages/ceo/Dashboard.jsx` ✅ — 4 KPI cards with % change vs previous period, bar chart (12-month trend via Recharts), donut chart (revenue by project), project table with progress bars + 🟢🟡🔴 flags + search + totals footer, pending expense alert banner
+- `App.jsx` — import real Dashboard component ✅
+
+### ✅ Option E: Admin Screens & Settings — SELESAI
+- `hooks/useUsers.js` ✅ — fetch all profiles with project assignments, updateUser, updateProjectAssignments, inviteUser (Supabase auth.admin.inviteUserByEmail)
+- `pages/admin/UserManagement.jsx` ✅ — user list table with role badges, search, add/edit modal with project checkbox assignments (PM only), activate/deactivate toggle
+- `pages/admin/Settings.jsx` ✅ — 3 setting groups: KPI thresholds (warning % + critical % with live preview), submission deadline day, auto-report email recipients; upsert to `system_settings` table
+- `App.jsx` — import real components, tambah `/settings` route ✅
+
+---
+
+### ✅ Sasaran & KPI — SELESAI
+- `hooks/useTargets.js` ✅ — fetch projects + targets for selected year/month; batch upsert using unique constraint `(tenant_id, project_id, year, month)`
+- `pages/ceo/TargetsConfig.jsx` ✅ — year/month filter, editable table (target_revenue + target_profit_margin per project), inline saved values shown below inputs, "Kemaskini Semua" saves all at once
+- `App.jsx` — tambah `/targets-config` route ✅
+
+### ✅ Laporan Kewangan — Excel Export SELESAI
+- `hooks/useReports.js` ✅ — parallel queries (sales, approved expenses, projects, targets); aggregates per project; supports 3 filters (month, quarter, YTD)
+- `pages/ceo/Reports.jsx` ✅ — filter panel, preview table with KPI header (navy), project summary table, data counts, Excel export via SheetJS (3 sheets: Ringkasan Projek, Data Jualan, Belanja Diluluskan)
+- **Nota:** Iskandar perlu jalankan `pnpm add xlsx` sebelum test
+
+---
+
+## 5. Pending Manual Setup (Buat Kemudian)
+
+| # | Perkara | Bila |
+|---|---|---|
+| 1 | Buat Supabase Storage bucket `expense-receipts` (Private) — Dashboard → Storage → New Bucket | Sebelum demo |
+| 2 | `pnpm add recharts` — diperlukan untuk Papan Pemuka (bar chart + donut chart) | Sebelum test Dashboard |
+| 3 | `pnpm add xlsx` — diperlukan untuk eksport Excel dalam Laporan Kewangan | Sebelum test Reports |
