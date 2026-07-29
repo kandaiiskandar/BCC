@@ -18,6 +18,21 @@ import {
   FileText,
 } from 'lucide-react'
 
+const ITEMS_PER_PAGE = 10
+
+function getPageNumbers(current, total) {
+  if (total <= 7) return Array.from({ length: total }, (_, i) => i + 1)
+  const pages = []
+  const left = Math.max(2, current - 2)
+  const right = Math.min(total - 1, current + 2)
+  pages.push(1)
+  if (left > 2) pages.push('...')
+  for (let i = left; i <= right; i++) pages.push(i)
+  if (right < total - 1) pages.push('...')
+  pages.push(total)
+  return pages
+}
+
 export default function ExpenseApprovals() {
   const { expenses, loading, approveExpense, rejectExpense, getReceiptSignedUrl } = useExpenses()
 
@@ -28,8 +43,27 @@ export default function ExpenseApprovals() {
   const [receiptUrl, setReceiptUrl] = useState(null)
   const [loadingReceipt, setLoadingReceipt] = useState(false)
   const [actionMsg, setActionMsg] = useState({ type: '', text: '' })
+  const [statusFilter, setStatusFilter] = useState(null)
+  const [currentPage, setCurrentPage] = useState(1)
 
   const pendingCount = expenses.filter((e) => e.status === 'pending').length
+
+  // Filter
+  const filteredExpenses = statusFilter
+    ? expenses.filter((e) => e.status === statusFilter)
+    : expenses
+
+  // Pagination
+  const totalPages = Math.max(1, Math.ceil(filteredExpenses.length / ITEMS_PER_PAGE))
+  const pagedExpenses = filteredExpenses.slice(
+    (currentPage - 1) * ITEMS_PER_PAGE,
+    currentPage * ITEMS_PER_PAGE
+  )
+
+  const handleFilterChange = (filter) => {
+    setStatusFilter(filter)
+    setCurrentPage(1)
+  }
 
   const openModal = async (expense) => {
     setSelectedExpense(expense)
@@ -111,17 +145,21 @@ export default function ExpenseApprovals() {
           )}
         </div>
 
-        {/* Summary Chips */}
-        <div className="flex flex-wrap gap-3">
+        {/* Filter Tabs */}
+        <div className="flex flex-wrap gap-2">
           {[
-            { label: 'Semua', filter: null, count: expenses.length, classes: 'bg-slate-100 text-slate-700 border-slate-200' },
-            { label: '⏳ Menunggu', filter: 'pending', count: expenses.filter((e) => e.status === 'pending').length, classes: 'bg-yellow-100 text-yellow-800 border-yellow-200' },
-            { label: '🟢 Diluluskan', filter: 'approved', count: expenses.filter((e) => e.status === 'approved').length, classes: 'bg-emerald-100 text-emerald-800 border-emerald-200' },
-            { label: '🔴 Ditolak', filter: 'rejected', count: expenses.filter((e) => e.status === 'rejected').length, classes: 'bg-red-100 text-red-800 border-red-200' },
-          ].map((chip) => (
-            <span key={chip.label} className={`text-xs font-semibold px-3 py-1.5 rounded-full border ${chip.classes}`}>
-              {chip.label}: {chip.count}
-            </span>
+            { label: 'Semua', filter: null, count: expenses.length, active: 'bg-slate-800 text-white border-slate-800', inactive: 'bg-white text-slate-600 border-slate-300 hover:bg-slate-50' },
+            { label: '⏳ Menunggu', filter: 'pending', count: expenses.filter((e) => e.status === 'pending').length, active: 'bg-yellow-500 text-white border-yellow-500', inactive: 'bg-white text-yellow-700 border-yellow-300 hover:bg-yellow-50' },
+            { label: '🟢 Diluluskan', filter: 'approved', count: expenses.filter((e) => e.status === 'approved').length, active: 'bg-emerald-600 text-white border-emerald-600', inactive: 'bg-white text-emerald-700 border-emerald-300 hover:bg-emerald-50' },
+            { label: '🔴 Ditolak', filter: 'rejected', count: expenses.filter((e) => e.status === 'rejected').length, active: 'bg-red-600 text-white border-red-600', inactive: 'bg-white text-red-700 border-red-300 hover:bg-red-50' },
+          ].map((tab) => (
+            <button
+              key={tab.label}
+              onClick={() => handleFilterChange(tab.filter)}
+              className={`text-xs font-semibold px-4 py-1.5 rounded-full border transition-colors ${statusFilter === tab.filter ? tab.active : tab.inactive}`}
+            >
+              {tab.label} <span className="ml-1 opacity-75">({tab.count})</span>
+            </button>
           ))}
         </div>
 
@@ -132,11 +170,11 @@ export default function ExpenseApprovals() {
               <div className="w-8 h-8 border-4 border-blue-900 border-t-transparent rounded-full animate-spin mx-auto mb-3"></div>
               <p className="text-xs text-slate-500">Memuatkan senarai tuntutan perbelanjaan...</p>
             </div>
-          ) : expenses.length === 0 ? (
+          ) : filteredExpenses.length === 0 ? (
             <div className="text-center py-16">
               <UserCheck className="w-12 h-12 text-slate-300 mx-auto mb-3" />
-              <p className="text-sm font-medium text-slate-600">Tiada tuntutan perbelanjaan</p>
-              <p className="text-xs text-slate-400 mt-1">Semua tuntutan telah diproses atau belum ada tuntutan dikemukakan.</p>
+              <p className="text-sm font-medium text-slate-600">Tiada tuntutan dalam kategori ini</p>
+              <p className="text-xs text-slate-400 mt-1">Cuba tukar penapis di atas untuk lihat rekod lain.</p>
             </div>
           ) : (
             <table className="w-full text-left border-collapse">
@@ -151,7 +189,7 @@ export default function ExpenseApprovals() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100 text-sm">
-                {expenses.map((item) => {
+                {pagedExpenses.map((item) => {
                   const badge = getExpenseStatusBadge(item.status)
                   return (
                     <tr key={item.id} className="hover:bg-slate-50/80 transition-colors">
@@ -198,6 +236,48 @@ export default function ExpenseApprovals() {
                 })}
               </tbody>
             </table>
+          )}
+
+          {/* Pagination */}
+          {filteredExpenses.length > ITEMS_PER_PAGE && (
+            <div className="flex items-center justify-between px-5 py-4 border-t border-slate-100 bg-slate-50/50">
+              <p className="text-xs text-slate-500">
+                Menunjukkan {(currentPage - 1) * ITEMS_PER_PAGE + 1}–{Math.min(currentPage * ITEMS_PER_PAGE, filteredExpenses.length)} daripada {filteredExpenses.length} rekod
+              </p>
+              <div className="flex items-center gap-1">
+                <button
+                  onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                  disabled={currentPage === 1}
+                  className="px-3 py-1.5 text-xs font-semibold rounded-lg border border-slate-200 bg-white text-slate-600 hover:bg-slate-100 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                >
+                  ← Sebelum
+                </button>
+                {getPageNumbers(currentPage, totalPages).map((page, idx) =>
+                  page === '...' ? (
+                    <span key={`ellipsis-${idx}`} className="w-8 h-8 flex items-center justify-center text-xs text-slate-400">…</span>
+                  ) : (
+                    <button
+                      key={page}
+                      onClick={() => setCurrentPage(page)}
+                      className={`w-8 h-8 text-xs font-semibold rounded-lg transition-colors ${
+                        page === currentPage
+                          ? 'bg-blue-900 text-white'
+                          : 'border border-slate-200 bg-white text-slate-600 hover:bg-slate-100'
+                      }`}
+                    >
+                      {page}
+                    </button>
+                  )
+                )}
+                <button
+                  onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+                  disabled={currentPage === totalPages}
+                  className="px-3 py-1.5 text-xs font-semibold rounded-lg border border-slate-200 bg-white text-slate-600 hover:bg-slate-100 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                >
+                  Seterus →
+                </button>
+              </div>
+            </div>
           )}
         </div>
       </div>

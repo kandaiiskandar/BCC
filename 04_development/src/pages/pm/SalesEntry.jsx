@@ -5,6 +5,21 @@ import { useSales } from '../../hooks/useSales'
 import { formatRM, formatDateBM, getRevenueTypeLabel, getPaymentMethodLabel } from '../../utils/formatters'
 import { PlusCircle, FileText, CheckCircle2, AlertCircle, Trash2 } from 'lucide-react'
 
+const ITEMS_PER_PAGE = 10
+
+function getPageNumbers(current, total) {
+  if (total <= 7) return Array.from({ length: total }, (_, i) => i + 1)
+  const pages = []
+  const left = Math.max(2, current - 2)
+  const right = Math.min(total - 1, current + 2)
+  pages.push(1)
+  if (left > 2) pages.push('...')
+  for (let i = left; i <= right; i++) pages.push(i)
+  if (right < total - 1) pages.push('...')
+  pages.push(total)
+  return pages
+}
+
 export default function SalesEntry() {
   const { projects, loading: loadingProjects } = useProjects()
 
@@ -22,12 +37,17 @@ export default function SalesEntry() {
 
   const { salesEntries, loading: loadingSales, addSalesEntry, deleteSalesEntry } = useSales(formData.project_id || null)
 
+  const [currentPage, setCurrentPage] = useState(1)
+  const totalPages = Math.max(1, Math.ceil(salesEntries.length / ITEMS_PER_PAGE))
+  const pagedSales = salesEntries.slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE)
+
   const [submitting, setSubmitting] = useState(false)
   const [successMsg, setSuccessMsg] = useState('')
   const [errorMsg, setErrorMsg] = useState('')
 
   const handleChange = (e) => {
     const { name, value } = e.target
+    if (name === 'project_id') setCurrentPage(1)
     setFormData((prev) => ({ ...prev, [name]: value }))
   }
 
@@ -297,6 +317,7 @@ export default function SalesEntry() {
                 <span className="text-xs font-semibold bg-slate-100 text-slate-600 px-2.5 py-1 rounded-full">
                   {salesEntries.length} Rekod
                 </span>
+
               </div>
 
               {loadingSales ? (
@@ -323,7 +344,7 @@ export default function SalesEntry() {
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-slate-100 text-xs">
-                      {salesEntries.map((item) => (
+                      {pagedSales.map((item) => (
                         <tr key={item.id} className="hover:bg-slate-50/80 transition-colors">
                           <td className="py-3 px-3 font-semibold text-slate-900">
                             {item.projects?.name}
@@ -354,6 +375,47 @@ export default function SalesEntry() {
                       ))}
                     </tbody>
                   </table>
+                  {/* Pagination */}
+                  {salesEntries.length > ITEMS_PER_PAGE && (
+                    <div className="flex items-center justify-between px-3 py-3 border-t border-slate-100 bg-slate-50/50">
+                      <p className="text-[10px] text-slate-500">
+                        {(currentPage - 1) * ITEMS_PER_PAGE + 1}–{Math.min(currentPage * ITEMS_PER_PAGE, salesEntries.length)} / {salesEntries.length} rekod
+                      </p>
+                      <div className="flex items-center gap-1">
+                        <button
+                          onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                          disabled={currentPage === 1}
+                          className="px-2.5 py-1 text-[10px] font-semibold rounded-lg border border-slate-200 bg-white text-slate-600 hover:bg-slate-100 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                        >
+                          ←
+                        </button>
+                        {getPageNumbers(currentPage, totalPages).map((page, idx) =>
+                          page === '...' ? (
+                            <span key={`ellipsis-${idx}`} className="w-7 h-7 flex items-center justify-center text-[10px] text-slate-400">…</span>
+                          ) : (
+                            <button
+                              key={page}
+                              onClick={() => setCurrentPage(page)}
+                              className={`w-7 h-7 text-[10px] font-semibold rounded-lg transition-colors ${
+                                page === currentPage
+                                  ? 'bg-blue-900 text-white'
+                                  : 'border border-slate-200 bg-white text-slate-600 hover:bg-slate-100'
+                              }`}
+                            >
+                              {page}
+                            </button>
+                          )
+                        )}
+                        <button
+                          onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+                          disabled={currentPage === totalPages}
+                          className="px-2.5 py-1 text-[10px] font-semibold rounded-lg border border-slate-200 bg-white text-slate-600 hover:bg-slate-100 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                        >
+                          →
+                        </button>
+                      </div>
+                    </div>
+                  )}
                 </div>
               )}
             </div>

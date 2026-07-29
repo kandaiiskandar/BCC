@@ -23,6 +23,21 @@ const EXPENSE_CATEGORIES = [
   { value: 'others',                 label: 'Lain-lain' },
 ]
 
+const ITEMS_PER_PAGE = 10
+
+function getPageNumbers(current, total) {
+  if (total <= 7) return Array.from({ length: total }, (_, i) => i + 1)
+  const pages = []
+  const left = Math.max(2, current - 2)
+  const right = Math.min(total - 1, current + 2)
+  pages.push(1)
+  if (left > 2) pages.push('...')
+  for (let i = left; i <= right; i++) pages.push(i)
+  if (right < total - 1) pages.push('...')
+  pages.push(total)
+  return pages
+}
+
 const ALLOWED_TYPES = ['application/pdf', 'image/png', 'image/jpeg', 'image/jpg']
 const MAX_FILE_SIZE = 5 * 1024 * 1024 // 5MB
 
@@ -38,6 +53,11 @@ export default function ExpenseEntry() {
   })
 
   const { expenses, loading: loadingExpenses, addExpenseEntry } = useExpenses(formData.project_id || null)
+
+  const [currentPage, setCurrentPage] = useState(1)
+  const totalPages = Math.max(1, Math.ceil(expenses.length / ITEMS_PER_PAGE))
+  const pagedExpenses = expenses.slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE)
+
   const [receiptFile, setReceiptFile] = useState(null)
   const [isDragging, setIsDragging] = useState(false)
   const [submitting, setSubmitting] = useState(false)
@@ -47,6 +67,7 @@ export default function ExpenseEntry() {
 
   const handleChange = (e) => {
     const { name, value } = e.target
+    if (name === 'project_id') setCurrentPage(1)
     setFormData((prev) => ({ ...prev, [name]: value }))
   }
 
@@ -319,6 +340,9 @@ export default function ExpenseEntry() {
                 <span className="bg-red-100 text-red-800 border border-red-200 px-2 py-0.5 rounded-full">
                   🔴 {expenses.filter((e) => e.status === 'rejected').length} Tolak
                 </span>
+                <span className="bg-slate-100 text-slate-600 border border-slate-200 px-2 py-0.5 rounded-full">
+                  {expenses.length} Jumlah
+                </span>
               </div>
             </div>
 
@@ -346,7 +370,7 @@ export default function ExpenseEntry() {
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-100 text-xs">
-                    {expenses.map((item) => {
+                    {pagedExpenses.map((item) => {
                       const badge = getExpenseStatusBadge(item.status)
                       return (
                         <tr key={item.id} className="hover:bg-slate-50/80 transition-colors">
@@ -387,6 +411,47 @@ export default function ExpenseEntry() {
                     })}
                   </tbody>
                 </table>
+                {/* Pagination */}
+                {expenses.length > ITEMS_PER_PAGE && (
+                  <div className="flex items-center justify-between px-3 py-3 border-t border-slate-100 bg-slate-50/50">
+                    <p className="text-[10px] text-slate-500">
+                      {(currentPage - 1) * ITEMS_PER_PAGE + 1}–{Math.min(currentPage * ITEMS_PER_PAGE, expenses.length)} / {expenses.length} rekod
+                    </p>
+                    <div className="flex items-center gap-1">
+                      <button
+                        onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                        disabled={currentPage === 1}
+                        className="px-2.5 py-1 text-[10px] font-semibold rounded-lg border border-slate-200 bg-white text-slate-600 hover:bg-slate-100 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                      >
+                        ←
+                      </button>
+                      {getPageNumbers(currentPage, totalPages).map((page, idx) =>
+                        page === '...' ? (
+                          <span key={`ellipsis-${idx}`} className="w-7 h-7 flex items-center justify-center text-[10px] text-slate-400">…</span>
+                        ) : (
+                          <button
+                            key={page}
+                            onClick={() => setCurrentPage(page)}
+                            className={`w-7 h-7 text-[10px] font-semibold rounded-lg transition-colors ${
+                              page === currentPage
+                                ? 'bg-blue-900 text-white'
+                                : 'border border-slate-200 bg-white text-slate-600 hover:bg-slate-100'
+                            }`}
+                          >
+                            {page}
+                          </button>
+                        )
+                      )}
+                      <button
+                        onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+                        disabled={currentPage === totalPages}
+                        className="px-2.5 py-1 text-[10px] font-semibold rounded-lg border border-slate-200 bg-white text-slate-600 hover:bg-slate-100 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                      >
+                        →
+                      </button>
+                    </div>
+                  </div>
+                )}
               </div>
             )}
           </div>
